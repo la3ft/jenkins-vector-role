@@ -1,0 +1,17 @@
+node("centos7"){
+    stage("Git checkout"){
+        git branch: 'main', credentialsId: '', url: 'git@github.com:la3ft/jenkins-vector-role.git'
+    }
+    stage("Check"){
+        prod_run=false
+    }
+    stage("Run"){
+        if (prod_run){
+            sh 'ansible-playbook site.yml -i inventory/prod.yml'
+        }
+        else{
+            sh 'ansible-playbook --check --diff site.yml -i inventory/prod.yml'
+        }
+        cleanWs()
+    }
+}
